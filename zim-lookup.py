@@ -1,4 +1,4 @@
-from selenium import webdriver
+import undetected_chromedriver as uc
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -23,6 +23,7 @@ def search(driver, tracker):
     wait_for_content(driver, "//input[@id='shipment-main-search-2']")
     input_box = driver.find_element(By.XPATH, "//input[@id='shipment-main-search-2']")
     input_box.send_keys(tracker)
+    input_box.send_keys(Keys.ENTER)
     
     wait_for_content(driver, "//input[@class='btn btn-primary chips-search-button']")
     track_shipment_button = driver.find_element(By.XPATH, "//input[@class='btn btn-primary chips-search-button']")
@@ -42,8 +43,6 @@ def format_date(date):
     # Format the date as "month/day"
     formatted_date = date_object.strftime("%m/%d")
     return formatted_date
-
-    
     
 # Setup excel workbook
 workbook = Workbook()
@@ -51,7 +50,7 @@ worksheet = workbook.active
 worksheet.title = "Shipping Date Changes"
 
 # Create a new instance of the Firefox driver
-driver = webdriver.Firefox()
+driver = uc.Chrome(use_subprocess=True)
 driver.get('https://www.zim.com/tools/track-a-shipment')
 
 # Get list of MSC tracking numbers
