@@ -27,18 +27,18 @@ def search(driver, tracker):
     
     wait_for_content(driver, "//input[@class='btn btn-primary chips-search-button']")
     track_shipment_button = driver.find_element(By.XPATH, "//input[@class='btn btn-primary chips-search-button']")
-    time.sleep(1)
+    time.sleep(2)
     track_shipment_button.click()
     
 def retrieve_eta_date(driver):
     wait_for_content(driver, "//div[@id='etaDate']")
     eta_date = driver.find_element(By.XPATH, "//div[@id='etaDate']")
-    
+    eta_date = eta_date.text.replace("ETA: ", "")
     return format_date(eta_date)
     
 def format_date(date):
     # Parse the input string into a datetime object
-    date_object = datetime.strptime(date, "%d-%M-%Y")
+    date_object = datetime.strptime(date, "%d-%b-%Y")
 
     # Format the date as "month/day"
     formatted_date = date_object.strftime("%m/%d")
@@ -48,10 +48,12 @@ def format_date(date):
 workbook = Workbook()
 worksheet = workbook.active
 worksheet.title = "Shipping Date Changes"
+worksheet.column_dimensions['A'].width = 20
 
 # Create a new instance of the Firefox driver
 driver = uc.Chrome(use_subprocess=True)
 driver.get('https://www.zim.com/tools/track-a-shipment')
+time.sleep(1)
 
 # Get list of MSC tracking numbers
 list_tracking_numbers = open("list-trackers.txt", "r").readlines()
